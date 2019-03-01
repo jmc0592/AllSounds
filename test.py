@@ -75,7 +75,10 @@ def play_combined_sound(sounds, playIndivSounds=False):
     stream.stop_stream()
     stream.close()
 
-def test_AmplitudeChange(original, changed):
+def test_AmplitudeChange():
+    original = wm.createSineWave(600, duration)
+    changed = wm.createSineWave(600, duration, amplitude=4)
+
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
                     rate=samplingRate,
@@ -86,6 +89,9 @@ def test_AmplitudeChange(original, changed):
 
     stream.stop_stream()
     stream.close()
+
+    # plt.plot(x3, wave3)
+    # plt.show() # this bad boi is massive. zoom in to see it.
 
 if __name__ == "__main__":
 
@@ -114,10 +120,7 @@ if __name__ == "__main__":
         cNoteSawtooth = wm.createSawtoothWave(C_NOTE_FREQ, duration)
         play_sound(cNoteSawtooth)
 
-        wave1, x1 = sound.createWave(samplingRate, duration, 900, returnXCoords=True)
-        wave2, x2 = sound.createWave(samplingRate, duration, 440, returnXCoords=True)
-        wave3, x3 = sound.createWave(samplingRate, duration, 600, returnXCoords=True)
-        wave3_1, x3_1 = sound.createWave(samplingRate, duration, 600, 4, returnXCoords=True)
+        test_AmplitudeChange()
 
         #play_mary_had_a_little_lamb()
         #play_when_you_were_young()
