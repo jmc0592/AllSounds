@@ -4,34 +4,21 @@ import traceback
 
 # TODO: Add test_NCombined() ?
 
-def test_TwoCombined(wave1, wave2):
-    wave3 = wave1 + wave2
+def test_combined(sounds):
+    wave = 0
+    for sound in sounds:
+        # add all sounds together
+        wave += sound
 
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
                     rate=samplingRate,
                     output=True)
 
-    stream.write(volume * wave1)
-    stream.write(volume * wave2)
-    stream.write(volume * wave3) # combined waves
-
-    stream.stop_stream()
-    stream.close()
-    
-
-def test_ThreeCombined(wave1, wave2, wave3):
-    wave4 = wave1 + wave2 + wave3
-
-    stream = p.open(format=pyaudio.paFloat32,
-                    channels=1,
-                    rate=samplingRate,
-                    output=True)
-
-    stream.write(volume * wave1)
-    stream.write(volume * wave2)
-    stream.write(volume * wave3)
-    stream.write(volume * wave4) # combined waves
+    # play indiv sounds, followed by combined sound
+    for sound in sounds:
+        stream.write(volume * sound)
+    stream.write(volume * wave)
 
     stream.stop_stream()
     stream.close()
@@ -60,8 +47,8 @@ try:
     wave3 = sound.createWave(samplingRate, duration, 600)
     wave3_1 = sound.createWave(samplingRate, duration, 600, 4)
 
-    test_TwoCombined(wave1, wave2)
-    test_ThreeCombined(wave1, wave2, wave3)
+    test_combined([wave1, wave2])
+    test_combined([wave1, wave2, wave3])
     test_AmplitudeChange(wave3, wave3_1)
 
 except:
