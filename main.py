@@ -2,13 +2,7 @@ import pyaudio
 import numpy as np
 import time
 import traceback
-
-def createWave(samplingRate, duration, frequency):
-    samples = np.arange(samplingRate * duration) / samplingRate
-    sinwave = 2 * np.pi * samples * frequency
-    wave = (np.sin(sinwave)).astype(np.float32)
-
-    return wave
+from sound import createWave
 
 try:
     p = pyaudio.PyAudio()
@@ -20,7 +14,7 @@ try:
     maximumFrequency = 20000.0 # Average maximum frequency a human can hear
 
     # loop though all frequencies and play them
-    for frequency in np.arange(minimumFrequency, maximumFrequency, 1):
+    for frequency in np.arange(minimumFrequency, maximumFrequency + 1, 1):
         print(frequency)
 
         data = createWave(samplingRate, duration, frequency)
