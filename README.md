@@ -19,3 +19,4 @@ In /etc/pulse/daemon.conf, change add/change "default-fragments = 5" and "defaul
 * https://wonders.physics.wisc.edu/what-is-sound/
 * http://people.csail.mit.edu/hubert/pyaudio/
 * https://bbs.archlinux.org/viewtopic.php?id=185736
+* https://www.ams.jhu.edu/dan-mathofmusic/sound-waves/

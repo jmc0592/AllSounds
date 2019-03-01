@@ -1,5 +1,7 @@
 import sound
 import pyaudio
+import time
+import matplotlib.pyplot as plt
 import traceback
 
 # TODO: Add test_NCombined() ?
@@ -55,15 +57,19 @@ try:
     duration = 2.0
     samplingRate = 44100
 
-    wave1 = sound.createWave(samplingRate, duration, 900)
-    wave2 = sound.createWave(samplingRate, duration, 440)
-    wave3 = sound.createWave(samplingRate, duration, 600)
-    wave3_1 = sound.createWave(samplingRate, duration, 600, 4)
+    wave1, x1 = sound.createWave(samplingRate, duration, 900, returnXCoords=True)
+    wave2, x2 = sound.createWave(samplingRate, duration, 440, returnXCoords=True)
+    wave3, x3 = sound.createWave(samplingRate, duration, 600, returnXCoords=True)
+    wave3_1, x3_1 = sound.createWave(samplingRate, duration, 600, 4, returnXCoords=True)
 
     test_TwoCombined(wave1, wave2)
+    time.sleep(2)
     test_ThreeCombined(wave1, wave2, wave3)
+    time.sleep(2)
     test_AmplitudeChange(wave3, wave3_1)
 
+    # plt.plot(x3, wave3)
+    # plt.show()
 except:
     print(traceback.format_exc())
 finally:
