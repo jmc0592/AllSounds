@@ -1,0 +1,1 @@
+FREQUENCY is simply the change in pitch. It will not change a sound but will change the pitch of the sound. So change in frequency is the change in notes on a piano. Frequency for C is a lower frequency for D, etc.

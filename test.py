@@ -6,34 +6,79 @@ import traceback
 
 # TODO: Add test_NCombined() ?
 
-def test_TwoCombined(wave1, wave2):
-    wave3 = wave1 + wave2
-
+def play_sound(sound):
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
                     rate=samplingRate,
                     output=True)
-
-    stream.write(volume * wave1)
-    stream.write(volume * wave2)
-    stream.write(volume * wave3) # combined waves
-
-    stream.stop_stream()
+    stream.write(sound)
     stream.close()
-    
 
-def test_ThreeCombined(wave1, wave2, wave3):
-    wave4 = wave1 + wave2 + wave3
+def play_mary_had_a_little_lamb():
+
+    # piano note frequencies in Hz (see https://en.wikipedia.org/wiki/Piano_key_frequencies)
+    C_NOTE_FREQ = 261.6256
+    D_NOTE_FREQ = 293.6648
+    E_NOTE_FREQ = 329.6276
+    F_NOTE_FREQ = 349.2282
+    G_NOTE_FREQ = 391.9954
+    A_NOTE_FREQ = 440.0000
+    B_NOTE_FREQ = 493.8833
+
+    c = sound.createWave(samplingRate, duration, C_NOTE_FREQ)
+    d = sound.createWave(samplingRate, duration, D_NOTE_FREQ)
+    e = sound.createWave(samplingRate, duration, E_NOTE_FREQ)
+
+    play_sound(e)
+    play_sound(d)
+    play_sound(c)
+    play_sound(d)
+    play_sound(e)
+    play_sound(e)
+    play_sound(e)
+
+def play_when_you_were_young():
+
+    C_NOTE_FREQ = 261.6256
+    C_SHARP_NOTE_FREQ = 277.1826
+    D_NOTE_FREQ = 293.6648
+    E_NOTE_FREQ = 329.6276
+    F_NOTE_FREQ = 349.2282
+    F_SHARP_NOTE_FREQ = 369.9944
+    G_NOTE_FREQ = 391.9954
+    G_SHARP_NOTE_FREQ = 415.3047
+    A_NOTE_FREQ = 440.0000
+    B_NOTE_FREQ = 493.8833
+
+    e = sound.createWave(samplingRate, duration, E_NOTE_FREQ)
+    gSharp = sound.createWave(samplingRate, duration, G_SHARP_NOTE_FREQ)
+    b = sound.createWave(samplingRate, duration, B_NOTE_FREQ)
+    fSharp = sound.createWave(samplingRate, duration, F_SHARP_NOTE_FREQ)
+    cSharp = sound.createWave(samplingRate, duration, 554.3653)
+    dSharp = sound.createWave(samplingRate, duration, 622.2540)
+
+    combine([e,gSharp,b])   # E Chord
+    combine([e,gSharp,b])   # E Chord
+    combine([e,gSharp,b])   # E Chord
+    combine([fSharp, gSharp, cSharp])   # F# Chord
+    combine([gSharp, b, dSharp])   # G#m Chord
+
+def combine(sounds, playIndivSounds=False):
+    wave = 0
+    for sound in sounds:
+        # add all sounds together
+        wave += sound
 
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
                     rate=samplingRate,
                     output=True)
 
-    stream.write(volume * wave1)
-    stream.write(volume * wave2)
-    stream.write(volume * wave3)
-    stream.write(volume * wave4) # combined waves
+    # play indiv sounds, followed by combined sound
+    if playIndivSounds:
+        for sound in sounds:
+            stream.write(volume * sound)
+    stream.write(volume * wave)
 
     stream.stop_stream()
     stream.close()
@@ -50,27 +95,30 @@ def test_AmplitudeChange(original, changed):
     stream.stop_stream()
     stream.close()
 
-try:
-    p = pyaudio.PyAudio()
+if __name__ == "__main__":
 
-    volume = 1.0
-    duration = 2.0
-    samplingRate = 44100
+    try:
+        p = pyaudio.PyAudio()
 
-    wave1, x1 = sound.createWave(samplingRate, duration, 900, returnXCoords=True)
-    wave2, x2 = sound.createWave(samplingRate, duration, 440, returnXCoords=True)
-    wave3, x3 = sound.createWave(samplingRate, duration, 600, returnXCoords=True)
-    wave3_1, x3_1 = sound.createWave(samplingRate, duration, 600, 4, returnXCoords=True)
+        volume = 1.0
+        duration = 2.0
+        samplingRate = 44100
 
-    test_TwoCombined(wave1, wave2)
-    time.sleep(2)
-    test_ThreeCombined(wave1, wave2, wave3)
-    time.sleep(2)
-    test_AmplitudeChange(wave3, wave3_1)
+        wave1, x1 = sound.createWave(samplingRate, duration, 900, returnXCoords=True)
+        wave2, x2 = sound.createWave(samplingRate, duration, 440, returnXCoords=True)
+        wave3, x3 = sound.createWave(samplingRate, duration, 600, returnXCoords=True)
+        wave3_1, x3_1 = sound.createWave(samplingRate, duration, 600, 4, returnXCoords=True)
 
-    # plt.plot(x3, wave3)
-    # plt.show()
-except:
-    print(traceback.format_exc())
-finally:
-    p.terminate()
+        play_mary_had_a_little_lamb()
+        play_when_you_were_young()
+        test_AmplitudeChange(wave3, wave3_1)
+        #combine([wave1, wave2], playIndivSounds=True)
+        #combine([wave1, wave2, wave3], playIndivSounds=True)
+
+        # plt.plot(x3, wave3)
+        # plt.show() # this bad boi is massive. zoom in to see it.
+
+    except:
+        print(traceback.format_exc())
+    finally:
+        p.terminate()
