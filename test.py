@@ -3,27 +3,19 @@ import pyaudio
 import time
 import matplotlib.pyplot as plt
 import traceback
-
-# TODO: Add test_NCombined() ?
+import wavemaker
 
 def play_sound(sound):
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
                     rate=samplingRate,
                     output=True)
-    stream.write(sound)
+    stream.write(volume * sound)
+
+    stream.stop_stream()
     stream.close()
 
 def play_mary_had_a_little_lamb():
-
-    # piano note frequencies in Hz (see https://en.wikipedia.org/wiki/Piano_key_frequencies)
-    C_NOTE_FREQ = 261.6256
-    D_NOTE_FREQ = 293.6648
-    E_NOTE_FREQ = 329.6276
-    F_NOTE_FREQ = 349.2282
-    G_NOTE_FREQ = 391.9954
-    A_NOTE_FREQ = 440.0000
-    B_NOTE_FREQ = 493.8833
 
     c = sound.createWave(samplingRate, duration, C_NOTE_FREQ)
     d = sound.createWave(samplingRate, duration, D_NOTE_FREQ)
@@ -63,7 +55,7 @@ def play_when_you_were_young():
     combine([fSharp, gSharp, cSharp])   # F# Chord
     combine([gSharp, b, dSharp])   # G#m Chord
 
-def combine(sounds, playIndivSounds=False):
+def play_combined_sound(sounds, playIndivSounds=False):
     wave = 0
     for sound in sounds:
         # add all sounds together
@@ -98,22 +90,40 @@ def test_AmplitudeChange(original, changed):
 if __name__ == "__main__":
 
     try:
-        p = pyaudio.PyAudio()
+
+        # piano note frequencies in Hz (see https://en.wikipedia.org/wiki/Piano_key_frequencies)
+        C_NOTE_FREQ = 261.6256
+        D_NOTE_FREQ = 293.6648
+        E_NOTE_FREQ = 329.6276
+        F_NOTE_FREQ = 349.2282
+        G_NOTE_FREQ = 391.9954
+        A_NOTE_FREQ = 440.0000
+        B_NOTE_FREQ = 493.8833
 
         volume = 1.0
         duration = 2.0
         samplingRate = 44100
+
+        p = pyaudio.PyAudio()
+        wm = wavemaker.WaveMaker(samplingRate)
+
+        cNoteSine = wm.createSineWave(C_NOTE_FREQ, duration)
+        play_sound(cNoteSine)
+        cNoteSquare = wm.createSquareWave(C_NOTE_FREQ, duration)
+        play_sound(cNoteSquare)
+        cNoteSawtooth = wm.createSawtoothWave(C_NOTE_FREQ, duration)
+        play_sound(cNoteSawtooth)
 
         wave1, x1 = sound.createWave(samplingRate, duration, 900, returnXCoords=True)
         wave2, x2 = sound.createWave(samplingRate, duration, 440, returnXCoords=True)
         wave3, x3 = sound.createWave(samplingRate, duration, 600, returnXCoords=True)
         wave3_1, x3_1 = sound.createWave(samplingRate, duration, 600, 4, returnXCoords=True)
 
-        play_mary_had_a_little_lamb()
-        play_when_you_were_young()
-        test_AmplitudeChange(wave3, wave3_1)
-        #combine([wave1, wave2], playIndivSounds=True)
-        #combine([wave1, wave2, wave3], playIndivSounds=True)
+        #play_mary_had_a_little_lamb()
+        #play_when_you_were_young()
+
+        #play_combined_sound([wave1, wave2], playIndivSounds=True)
+        #play_combined_sound([wave1, wave2, wave3], playIndivSounds=True)
 
         # plt.plot(x3, wave3)
         # plt.show() # this bad boi is massive. zoom in to see it.
