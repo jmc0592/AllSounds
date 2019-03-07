@@ -5,6 +5,21 @@ import matplotlib.pyplot as plt
 import traceback
 import wavemaker
 
+class Freq:
+    # piano note frequencies in Hz (see https://en.wikipedia.org/wiki/Piano_key_frequencies)
+    C = 261.6256
+    CSHARP = DFLAT = 277.1826
+    D = 293.6648
+    DSHARP = EFLAT = 311.1270
+    E = 329.6276
+    F = 349.2282
+    FSHARP = GFLAT = 369.9944
+    G = 391.9954
+    GSHARP = AFLAT = 415.3047
+    A = 440.0000
+    ASHARP = BFLAT = 466.1638
+    B = 493.8833
+
 def play_sound(sound):
     stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
@@ -17,9 +32,9 @@ def play_sound(sound):
 
 def play_mary_had_a_little_lamb():
 
-    c = sound.createWave(samplingRate, duration, C_NOTE_FREQ)
-    d = sound.createWave(samplingRate, duration, D_NOTE_FREQ)
-    e = sound.createWave(samplingRate, duration, E_NOTE_FREQ)
+    c = sound.createWave(samplingRate, duration, Freq.C)
+    d = sound.createWave(samplingRate, duration, Freq.D)
+    e = sound.createWave(samplingRate, duration, Freq.E)
 
     play_sound(e)
     play_sound(d)
@@ -31,29 +46,20 @@ def play_mary_had_a_little_lamb():
 
 def play_when_you_were_young():
 
-    C_NOTE_FREQ = 261.6256
-    C_SHARP_NOTE_FREQ = 277.1826
-    D_NOTE_FREQ = 293.6648
-    E_NOTE_FREQ = 329.6276
-    F_NOTE_FREQ = 349.2282
-    F_SHARP_NOTE_FREQ = 369.9944
-    G_NOTE_FREQ = 391.9954
-    G_SHARP_NOTE_FREQ = 415.3047
-    A_NOTE_FREQ = 440.0000
-    B_NOTE_FREQ = 493.8833
-
-    e = sound.createWave(samplingRate, duration, E_NOTE_FREQ)
-    gSharp = sound.createWave(samplingRate, duration, G_SHARP_NOTE_FREQ)
-    b = sound.createWave(samplingRate, duration, B_NOTE_FREQ)
-    fSharp = sound.createWave(samplingRate, duration, F_SHARP_NOTE_FREQ)
+    e = sound.createWave(samplingRate, duration, Freq.E)
+    gSharp = sound.createWave(samplingRate, duration, Freq.GSHARP)
+    b = sound.createWave(samplingRate, duration, Freq.B)
+    fSharp = sound.createWave(samplingRate, duration, Freq.FSHARP)
     cSharp = sound.createWave(samplingRate, duration, 554.3653)
     dSharp = sound.createWave(samplingRate, duration, 622.2540)
 
-    combine([e,gSharp,b])   # E Chord
-    combine([e,gSharp,b])   # E Chord
-    combine([e,gSharp,b])   # E Chord
-    combine([fSharp, gSharp, cSharp])   # F# Chord
-    combine([gSharp, b, dSharp])   # G#m Chord
+    play_combined_sound([e,gSharp,b])   # E Chord
+    play_combined_sound([e,gSharp,b])   # E Chord
+    play_combined_sound([e,gSharp,b])   # E Chord
+    play_combined_sound([e,gSharp,b])   # E Chord
+    play_combined_sound([fSharp, gSharp, cSharp])   # F# Chord
+    play_combined_sound([fSharp, gSharp, cSharp])   # F# Chord
+    play_combined_sound([gSharp, b, dSharp])   # G#m Chord
 
 def play_combined_sound(sounds, playIndivSounds=False):
     wave = 0
@@ -90,21 +96,12 @@ def test_AmplitudeChange():
     stream.stop_stream()
     stream.close()
 
-    # plt.plot(x3, wave3)
-    # plt.show() # this bad boi is massive. zoom in to see it.
+    #plt.plot(x3, wave3)
+    #plt.show() # this bad boi is massive. zoom in to see it.
 
 if __name__ == "__main__":
 
     try:
-
-        # piano note frequencies in Hz (see https://en.wikipedia.org/wiki/Piano_key_frequencies)
-        C_NOTE_FREQ = 261.6256
-        D_NOTE_FREQ = 293.6648
-        E_NOTE_FREQ = 329.6276
-        F_NOTE_FREQ = 349.2282
-        G_NOTE_FREQ = 391.9954
-        A_NOTE_FREQ = 440.0000
-        B_NOTE_FREQ = 493.8833
 
         volume = 1.0
         duration = 2.0
@@ -113,14 +110,18 @@ if __name__ == "__main__":
         p = pyaudio.PyAudio()
         wm = wavemaker.WaveMaker(samplingRate)
 
-        cNoteSine = wm.createSineWave(C_NOTE_FREQ, duration)
-        play_sound(cNoteSine)
-        cNoteSquare = wm.createSquareWave(C_NOTE_FREQ, duration)
-        play_sound(cNoteSquare)
-        cNoteSawtooth = wm.createSawtoothWave(C_NOTE_FREQ, duration)
-        play_sound(cNoteSawtooth)
+        cNoteSine = wm.createSineWave(Freq.C, duration)
+        #play_sound(cNoteSine)
+        cNoteSquare = wm.createSquareWave(Freq.C, duration)
+        #play_sound(cNoteSquare)
+        cNoteSawtooth = wm.createSawtoothWave(Freq.C, duration)
 
-        test_AmplitudeChange()
+        #play_sound(cNoteSine)
+        #play_sound(cNoteSquare)
+        #play_sound(cNoteSawtooth)
+        play_sound(cNoteSquare)
+
+        #test_AmplitudeChange()
 
         #play_mary_had_a_little_lamb()
         #play_when_you_were_young()
